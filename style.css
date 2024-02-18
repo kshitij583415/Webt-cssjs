@@ -1,0 +1,67 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #093e3e;
+}
+.d-none{
+    display:none;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#login > form , #calculation > form,#bill{
+    width:30vw;
+    background-color: white;
+    padding: 10px 10px;
+    border:1px solid black;
+    box-shadow: 1px 1px 10px  rgba(0,0,0,.5);
+    box-sizing:border-box;
+}
+
+#login > form label{
+    display:block;
+    margin-bottom: 5px;  
+    color: blue;
+}
+
+#login > form input{
+    width: 95%;
+    height: 30px;
+}
+#login > form input:hover{
+    transform: scale(1.02);
+}
+#login > form input::placeholder{
+    color:grey;
+    font-weight: lighter;
+}
+#login > form h1{
+    text-align: center;
+}
+
+.btn{
+    display: block;
+    width: 95%;
+    height: 35px;
+    background-color: #093e3e;
+    color:white;
+}
+
+.btn:hover{
+    transform: scale(1.02);
+    background-color: #0b5050;
+    cursor: pointer;
+}
+
+.error{
+    color:red;
+}
+
+.list{
+    list-style: none;
+}

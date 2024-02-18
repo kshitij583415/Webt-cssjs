@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food booking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">     
+        <div id="login">
+                <form>
+                    <h1>Login Form</h1>
+                <label for ="username">Username</label>
+                <input type="text" value="" id="username" placeholder="username">
+                <p id="username_error" class="error"></p>
+                <label for ="email">Email</label>
+                <input type="email" value="" id="email" placeholder="Email">
+                <p id="email_error" class="error"></p>
+                <label for ="password">Password</label>
+                <input type="password" value="" id="password" placeholder="Password">
+                <p id="password_error" class="error"></p>
+                <label for ="cpassword">Confirm Password</label>
+                <input type="password" value="" id="cpassword" placeholder="Confirm Password">
+                <p id="cpassword_error" class="error"></p>
+                <button type="submit" class="btn">Login</button>
+            </form>
+        </div>
+        <div class="d-none" id="calculation">
+            <form id="newCal">
+                <!-- <div class="items"> -->
+                    <ul class="list">
+                        <li>Lucknow Rs.4000 <button onClick="addCity(4000)">Add</button></li>
+                        <li>Kanpur Rs.1000 <button onClick="addCity(1000)">Add</button></li>
+                        <li>Banglore Rs.2000 <button onClick="addCity(2000)">Add</button></li>
+                        <li>Hyderabad Rs.1500 <button onClick="addCity(1500)">Add</button></li>
+                        <li>Hubli Rs.40 <button onClick="addCity(40)">Add</button></li>
+                    </ul>
+                <!-- </div> -->
+                <button type="submit">Total Price</button>
+            </form>
+        </div>
+        <div class="d-none" id="bill">
+            <h1>Total Price:</h1>
+            <h3 id="priceDisplay"></h3>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
