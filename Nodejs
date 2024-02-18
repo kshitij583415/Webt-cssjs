@@ -1,1 +1,332 @@
+const express = require('express');
+const app = express();
+const mysql = require('mysql');
+const bodyParser = require('body-parser');
+const urlencodedParser = bodyParser.urlencoded({ extended: true });
+app.use(express.json());
 
+
+function generateStyles() {
+    return `
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+            }
+
+            div {
+                margin: 20px;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                max-width: 300px;
+            }
+
+            input, select, textarea {
+                margin-bottom: 10px;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+            input[type="submit"] {
+                background-color: #4caf50;
+                color: #fff;
+                cursor: pointer;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+
+            th {
+                background-color: #4caf50;
+                color: #fff;
+            }
+            .mid{
+                margin:auto;
+            }
+            .mar{
+                margin-bottom:20px;
+
+            }
+        </style>
+    `;
+}
+
+var db = mysql.createConnection({
+    host: "127.0.0.1",
+    user: "root",
+    password: "",
+    database: "feedback"
+});
+
+db.connect(err => {
+    if (err) throw err;
+    console.log("Connected");
+});
+
+
+app.get("/",(req,res)=>{
+    var rr = "<html>"
+    rr += "<head>"
+    rr += generateStyles();
+    rr += "<div >"
+    rr += "<form action='/users/create' method='get' class='mid'>"
+    rr += "<h2 class='mid mar'>Feedback application</h2>"
+    rr += "<input type='submit' value='Create User' >";
+    rr += "</form>";
+    rr += "<form action='/posts/create' method='get' class='mid'>"
+    rr += "<input type='submit' value='Create post' >";
+    rr += "</form>";
+    rr += "<form action='/comments/create' method='get' class='mid'>"
+    rr += "<input type='submit' value='Create comments' >";
+    rr += "</form>";
+    rr += "<form action='/latest-posts' method='get' class='mid'>"
+    rr += "<input type='submit' value='Latest Posts' >";
+    rr += "</form>";
+    rr  +="<form action='/positive' method='get' class='mid'>"
+    rr  +="<input type='submit' value='Positive comment' >";
+    rr  +="</form>";
+    rr += "</div>"
+    rr += "</>"
+    rr += "</html>"
+    res.send(rr);
+})
+
+// db.query('create table users (user_id int primary key, username text,email varchar(255))',err=>{
+//     if(err) throw err;
+//     console.log("Table created");
+// })
+
+
+
+app.get('/users/create', (req, res) => {
+    var rr = "<html>"
+    rr += "<head>"
+    rr += "<div>"
+    rr += generateStyles();
+    
+    rr += "<form action='/users/create' method='post' class='mid'>"
+    rr += "<h1>User's info</h1>"
+    rr += "User Id" + "<input type='number' name='user_id' value='' ><br />";
+    rr += "Username" + "<input type='text' name='username' value='' ><br />";
+    rr += "Email" + "<input type='email' name='email' value='' ><br />";
+    rr += "<input type='submit' value='Add User' >";
+    rr += "</form>";
+    rr += "</div>"
+    rr += "</head>"
+    rr += "</html>"
+    res.send(rr);
+})
+
+app.post('/users/create', urlencodedParser, (req, res) => {
+    var a = req.body.user_id;
+    var b = req.body.username;
+    var c = req.body.email;
+    var sql = `insert into users values (${a},'${b}','${c}')`;
+    db.query(sql, err => {
+        if (err) throw err;
+        console.log("Inserted");
+        res.write("Tuple inserted");
+        res.send();
+    })
+})
+
+// db.query('create table posts (post_id int primary key, title text,content varchar(255),user_id int,created_at time,foreign key(user_id) references users(user_id))',err=>{
+//     if(err) throw err;
+//     console.log("Table created");
+// })
+
+app.get('/posts/create', (req, res) => {
+    var rr = "<html>"
+    rr += "<head>"
+    rr += "<div>"
+    rr += generateStyles();  
+    rr += "<form action='/posts/create' method='post' class='mid'>"
+    rr += "<h1>Post's info</h1>"
+    rr += "Post Id" + "<input type='number' name='post_id' value='' ><br />";
+    rr += "Title" + "<input type='text' name='title' value='' ><br />";
+    rr += "Content" + "<input type='text' name='content' value='' ><br />";
+    rr += "User Id" + "<input type='number' name='user_id' value='' ><br />";
+    rr += "Created at" + "<input type='time' name='created_at' value='' ><br />";
+    rr += "Rating" + "<input type='number' name='rating' min='1' max='5' required><br />";
+    rr += "<input type='submit' value='Add Post' >";
+    rr += "</form>";
+    rr += "</div>"
+    rr += "</head>"
+    rr += "</html>"
+    res.send(rr);
+})
+
+app.post('/posts/create', urlencodedParser, (req, res) => {
+    var a = req.body.post_id;
+    var b = req.body.title;
+    var c = req.body.content;
+    var d = req.body.user_id;
+    var e = req.body.created_at;
+    var f = req.body.rating;
+
+
+    var sql = `insert into posts values (${a},'${b}','${c}',${d},'${e}',${f})`;
+        db.query(sql, err => {
+        if (err) throw err;
+        console.log("Inserted");
+        res.write("Tuple inserted");
+        res.send();
+    })
+    // var sql1= 'alter posts add column rating';
+    // db.query(sql1,err=>{
+    //     if (err) throw err;
+    //     console.log("Inserted");
+    //     res.write("Column inserted");
+    //     res.send();
+    // })
+})
+
+
+// db.query('CREATE TABLE comments (comment_id INT PRIMARY KEY, post_id INT, user_id INT, comment_text VARCHAR(255), FOREIGN KEY (post_id) REFERENCES posts(post_id), FOREIGN KEY (user_id) REFERENCES users(user_id))', err => {
+//     if (err) throw err;
+//     console.log("Table created");
+// });
+
+
+
+app.get('/comments/create', (req, res) => {
+    var rr = "<html>"
+    rr += "<head>"
+    rr += "<div>"
+    rr += generateStyles();
+    
+    rr += "<form action='/comments/create' method='post' class='mid'>"
+    rr += "<h1>Comment's info</h1>"
+    rr += "Comment Id" + "<input type='number' name='comment_id' value='' ><br />";
+    rr += "Post Id" + "<input type='number' name='post_id' value='' ><br />";
+    rr += "User Id" + "<input type='text' name='user_id' value='' ><br />";
+    rr += "Write your comment" + "<input type='text' name='comment_text' value='' ><br />";
+    rr += "<input type='submit' value='Add Comment' >";
+    rr += "</form>";
+    
+    rr += "<form action='/delete' method='post' class='mid'>"
+    rr += "Comment Id" + "<input type='number' name='comment_id' value='' >";
+    rr += "<input type='submit' value='Delete comment' >";
+    rr += "</form>";
+    rr += "</div>"
+    rr += "</head>"
+    rr += "</html>"
+    res.send(rr);
+})
+
+app.post('/comments/create', urlencodedParser, (req, res) => {
+    var a = req.body.comment_id;
+    var b = req.body.post_id;
+    var c = req.body.user_id;
+    var d = req.body.comment_text;
+
+    var sql = `insert into comments values (${a},${b},${c},'${d}')`;
+    db.query(sql, err => {
+        if (err) throw err;
+        console.log("Inserted");
+        res.write("Tuple inserted");
+        res.send();
+    })
+})
+
+app.post('/delete', urlencodedParser, (req, res) => {
+    console.log(req.body.comment_id)
+    var sql = `DELETE FROM comments WHERE comment_id=${req.body.comment_id}`;
+    db.query(sql, err => {
+        if (err) throw err;
+        res.write('Tuple delted');
+        res.end();
+    })
+})
+
+
+app.get('/positive', (req, res) => {
+    var sql = 'SELECT comment_text,users.username FROM comments JOIN users ON comments.user_id = users.user_id WHERE comment_text LIKE "%good%" OR comment_text LIKE "%nice%"';
+    db.query(sql, (err, result) => {
+        console.log(result)
+        if (err) throw err;
+        var rr = "<html>"
+        rr += "<head>"
+        rr += generateStyles();
+        rr += "<table border='1' >"
+        rr += "<thead>"
+        rr += "<tr>"
+        rr += "<th>Username</th>"
+        rr += "<th>Positive Comments</th>"
+        rr += "</tr>"
+        rr += "</thead>"
+        rr += "<tbody>"
+        result.forEach(data => {
+            rr += `<tr><td>${data.username}</td><td>${data.comment_text}</td></tr>`
+        })
+        rr += "</table>"
+        rr += "</head>"
+        rr += "</html>"
+        res.send(rr);
+    })
+})
+
+
+app.get('/latest-posts', (req, res) => {
+    var sql = `
+        SELECT posts.post_id, posts.title, posts.content, posts.created_at, users.username
+        FROM posts
+        JOIN users ON posts.user_id = users.user_id
+        ORDER BY posts.created_at DESC
+        LIMIT 3;
+    `;
+    
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+
+        var rr = "<html>"
+        rr += "<head>"
+        rr += generateStyles();
+        rr += "<table border='1'>"
+        rr += "<thead>"
+        rr += "<tr>"
+        rr += "<th>Post ID</th>"
+        rr += "<th>Title</th>"
+        rr += "<th>Content</th>"
+        rr += "<th>Created At</th>"
+        rr += "<th>Username</th>"
+        rr += "</tr>"
+        rr += "</thead>"
+        rr += "<tbody>"
+
+        result.forEach(data => {
+            rr += `<tr><td>${data.post_id}</td><td>${data.title}</td><td>${data.content}</td><td>${data.created_at}</td><td>${data.username}</td></tr>`
+        })
+
+        rr += "</table>"
+        rr += "</head>"
+        rr += "</html>"
+
+        res.send(rr);
+    });
+});
+
+
+
+app.listen(5000, () => {
+    console.log("Server running at 5000 port");
+})
